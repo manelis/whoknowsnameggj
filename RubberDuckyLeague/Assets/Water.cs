@@ -9,7 +9,7 @@ public class Water : MonoBehaviour {
 
 	public Material watermaterial = null;
 
-	int vertexCount = 100;
+	int vertexCount = 250;
 
 	// Use this for initialization
 	void Start () {
