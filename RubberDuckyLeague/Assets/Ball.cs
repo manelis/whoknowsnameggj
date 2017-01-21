@@ -51,5 +51,11 @@ public class Ball : MonoBehaviour {
 	void Update () {
 		//Debug.Log (self_rigidbody.velocity);
 		RaycastHit2D raycastDown = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, -1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
+	
+		if (raycastDown.distance <= 0) {
+			RaycastHit2D raycastUp = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, 1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
+
+			transform.position += new Vector3 (0, raycastUp.distance, 0);
+		}
 	}
 }

@@ -69,6 +69,9 @@ public class Manager : MonoBehaviour {
 	}
 
 	void Score(){
+		if (scored)
+			return;
+
 		scored = true;
 		timeWhenScored = Time.time;
 	}
