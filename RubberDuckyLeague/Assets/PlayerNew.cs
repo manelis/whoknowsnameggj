@@ -9,6 +9,8 @@ public class PlayerNew : MonoBehaviour {
 
 	public string playername;
 
+    public ParticleSystem splash;
+
 	Rigidbody2D rigidbodyPlayer;
 
 	//constants
@@ -66,7 +68,6 @@ public class PlayerNew : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
 		resetState ();
 		rigidbodyPlayer = GetComponent<Rigidbody2D> ();
 	}
@@ -177,6 +178,9 @@ public class PlayerNew : MonoBehaviour {
 			transform.position += new Vector3 (0, fallingIncrement, 0);
 
 			if (raycastDown.distance < raycastRadius) {
+                ParticleSystem nice = Instantiate(splash, transform.position+(new Vector3(0,1,0)), transform.rotation) as ParticleSystem;
+                nice.Play();
+                Destroy(nice.gameObject, 1);
 				state = playerState.floating;
 			}
 		}

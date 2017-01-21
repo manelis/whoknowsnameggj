@@ -30,8 +30,8 @@ public class Manager : MonoBehaviour {
 	void Start () {
 		scorePlayer1 = scorePlayer2 = 0;
 
-		playerOneString = "Player1\nScore: ";
-		playerTwoString = "Player1\nScore: ";
+		playerOneString = "";
+		playerTwoString = "";
 
 
 		ballInitialPosition = ball.transform.position;
