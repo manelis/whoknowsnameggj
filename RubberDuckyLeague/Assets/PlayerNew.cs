@@ -12,30 +12,62 @@ public class PlayerNew : MonoBehaviour {
 	Rigidbody2D rigidbodyPlayer;
 
 	//constants
-	private float horizontalPlayerSpeed = 15;
-	private float raycastRadius = 0.4f;
-	private float gravity = 3.0f;
-	private float buttonBaseIncrementSpeed = 0.7f; // also means that after this value in seconds stops affecting
-	private float baseIncrementSpeedMultiplier = 30; //value multiplied to the speed when submerging
-	private float goBackUpSpeedMultipler = 4;
-	private float minMovingUpSpeed = 0.4f;
+	private float horizontalPlayerSpeed;
+	private float raycastRadius;
+	private float gravity;
+	private float buttonBaseIncrementSpeed; // also means that after this value in seconds stops affecting
+	private float baseIncrementSpeedMultiplier; //value multiplied to the speed when submerging
+	private float goBackUpSpeedMultipler;
+	private float minMovingUpSpeed;
 
-	private float collisionDisableTime = 1.0f;
+	private float collisionDisableTime;
 
 	//variables
-	private float verticalSpeed = 0.0f;
-	private float timeSinceSubmerssion = 0.0f;
-	private float timeSinceLettingGo = 0.0f;
-	private float timeSinceCollisionDisable = 0.0f;
-	private bool isCollisionsEnabled = true;
+	private float verticalSpeed ;
+	private float timeSinceSubmerssion;
+	private float timeSinceLettingGo;
+	private float timeSinceCollisionDisable;
+	private bool isCollisionsEnabled;
 
-	private int lastside = 1;
+	private int lastside;
 
-	private Vector3 previousPosition = new Vector3(0,0,0);
+	private Vector3 previousPosition;
+
+
+	public void resetState(){
+
+		horizontalPlayerSpeed = 15;
+		raycastRadius = 0.4f;
+		gravity = 3.0f;
+		buttonBaseIncrementSpeed = 0.7f; // also means that after this value in seconds stops affecting
+		baseIncrementSpeedMultiplier = 30; //value multiplied to the speed when submerging
+		goBackUpSpeedMultipler = 4;
+		minMovingUpSpeed = 0.4f;
+
+		collisionDisableTime = 1.0f;
+
+		//variables
+		verticalSpeed = 0.0f;
+		timeSinceSubmerssion = 0.0f;
+		timeSinceLettingGo = 0.0f;
+		timeSinceCollisionDisable = 0.0f;
+		isCollisionsEnabled = true;
+
+		lastside = 1;
+		if (playername == "player2")
+			lastside = -1;
+
+		previousPosition = new Vector3(0,0,0);
+
+		state = playerState.outsideFaling;
+
+	}
+
 
 	// Use this for initialization
 	void Start () {
 
+		resetState ();
 		rigidbodyPlayer = GetComponent<Rigidbody2D> ();
 	}
 	

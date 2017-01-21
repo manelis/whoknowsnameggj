@@ -78,6 +78,10 @@ public class Manager : MonoBehaviour {
 		ball.transform.position = ballInitialPosition;
 		player1.transform.position = player1InitialPosition;
 		player2.transform.position = player2InitialPosition;
+
+		player1.GetComponent<PlayerNew> ().resetState ();
+		player2.GetComponent<PlayerNew> ().resetState ();
+
 		//TODO: rotate players to face each other
 		scored = false;
 	}

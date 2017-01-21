@@ -21,7 +21,7 @@ public class Ball : MonoBehaviour {
 			//Vector2 addedForce = new Vector2 (direction.x, direction.y) * 30 * player.getSpeed ();
 
 			Vector3 addedForce = collisionDirection + player.getDirection ();
-			Debug.Log (addedForce);
+			//Debug.Log (addedForce);
 			self_rigidbody.AddForce (addedForce * 10,ForceMode2D.Impulse);
 
 			player.disableCollisions();
