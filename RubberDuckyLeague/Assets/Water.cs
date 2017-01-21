@@ -22,7 +22,7 @@ public class Water : MonoBehaviour {
 		lineRenderer = gameObject.AddComponent<LineRenderer>();
 		lineRenderer.SetVertexCount(vertexCount);
 		lineRenderer.material = watermaterial;
-		lineRenderer.SetWidth(0.1f, 0.1f);
+		lineRenderer.SetWidth(1.0f, 1.0f);
 		 
 		edgeCollider = gameObject.AddComponent<EdgeCollider2D> ();
 
@@ -47,10 +47,10 @@ public class Water : MonoBehaviour {
 
 			//Create the corners of the mesh
 			float xpos1 = 38f / vertexCount * i;
-			float ypos1 = Mathf.Sin (xpos1/2 + Time.time) * 1.5f + vertical_offset;
+			float ypos1 = Mathf.Sin (xpos1/2 + Time.time) * Mathf.Sin(Time.time) * 1.5f + vertical_offset;
 
 			float xpos2 = 38f / vertexCount * (i+1);
-			float ypos2 = Mathf.Sin (xpos2/2 + Time.time) * 1.5f + vertical_offset;
+			float ypos2 = Mathf.Sin (xpos2/2 + Time.time) * Mathf.Sin(Time.time) * 1.5f + vertical_offset;
 
 
 			Vector3[] Vertices = new Vector3[4];
@@ -91,10 +91,10 @@ public class Water : MonoBehaviour {
 		{
 
 			float xpos1 = 38f / vertexCount * i;
-			float ypos1 = Mathf.Sin (xpos1/2 + Time.time) * 1.5f + vertical_offset;
+			float ypos1 = Mathf.Sin (xpos1/2 + Time.time) * Mathf.Sin(Time.time) * 1.5f + vertical_offset;
 
 			float xpos2 = 38f / vertexCount * (i+1);
-			float ypos2 = Mathf.Sin (xpos2/2 + Time.time) * 1.5f + vertical_offset;
+			float ypos2 = Mathf.Sin (xpos2/2 + Time.time) * Mathf.Sin(Time.time) * 1.5f + vertical_offset;
 
 			Vector3[] Vertices = new Vector3[4];
 			Vertices[0] = new Vector3(xpos1, ypos1, 0);
@@ -115,7 +115,7 @@ public class Water : MonoBehaviour {
 
 		for (int i = 0; i < vertexCount; i++) {
 			float xpos = 38f / vertexCount * i;
-			float ypos = Mathf.Sin (xpos/2 + Time.time) * 1.5f + vertical_offset;
+			float ypos = Mathf.Sin (xpos/2 + Time.time) * Mathf.Sin(Time.time) * 1.5f + vertical_offset;
 
 			lineRenderer.SetPosition (i, new Vector3(xpos, ypos, 1) + transform.position);
 
