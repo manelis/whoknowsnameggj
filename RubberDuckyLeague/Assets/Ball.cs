@@ -15,14 +15,17 @@ public class Ball : MonoBehaviour {
 		PlayerNew player = collision.gameObject.GetComponent<PlayerNew> ();
 
 		if (player != null && player.collisionsEnabled()) {
-			Vector3 direction = transform.position - collision.gameObject.transform.position;
+
+			Vector3 collisionDirection = transform.position - collision.gameObject.transform.position;
 			self_rigidbody.constraints = RigidbodyConstraints2D.None;
-			Vector2 addedForce = new Vector2 (direction.x, direction.y) * 30 * player.getSpeed ();
+			//Vector2 addedForce = new Vector2 (direction.x, direction.y) * 30 * player.getSpeed ();
+
+			Vector3 addedForce = collisionDirection + player.getDirection ();
 			Debug.Log (addedForce);
-			self_rigidbody.AddForce (addedForce,ForceMode2D.Impulse);
+			self_rigidbody.AddForce (addedForce * 10,ForceMode2D.Impulse);
 
 			player.disableCollisions();
-			Debug.Log ("COLLISION!");
+			//Debug.Log ("COLLISION!");
 		}
 		else if(collision.gameObject.layer == LayerMask.NameToLayer("MapWater")){
 			self_rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX;

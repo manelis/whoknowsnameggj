@@ -15,8 +15,8 @@ public class PlayerNew : MonoBehaviour {
 	private float horizontalPlayerSpeed = 15;
 	private float raycastRadius = 0.4f;
 	private float gravity = 3.0f;
-	private float buttonBaseIncrementSpeed = 0.8f; // also means that after this value in seconds stops affecting
-	private float baseIncrementSpeedMultiplier = 20; //value multiplied to the speed when submerging
+	private float buttonBaseIncrementSpeed = 0.7f; // also means that after this value in seconds stops affecting
+	private float baseIncrementSpeedMultiplier = 30; //value multiplied to the speed when submerging
 	private float goBackUpSpeedMultipler = 4;
 	private float minMovingUpSpeed = 0.4f;
 
@@ -186,6 +186,10 @@ public class PlayerNew : MonoBehaviour {
 		
 	public float getSpeed(){
 		return (transform.position - previousPosition).magnitude;
+	}
+
+	public Vector3 getDirection(){
+		return transform.position - previousPosition;
 	}
 
 	public int getWallCollision(){
