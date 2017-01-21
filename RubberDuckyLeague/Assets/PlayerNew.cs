@@ -20,10 +20,14 @@ public class PlayerNew : MonoBehaviour {
 	private float goBackUpSpeedMultipler = 4;
 	private float minMovingUpSpeed = 0.4f;
 
+	private float collisionDisableTime = 1.0f;
+
 	//variables
 	private float verticalSpeed = 0.0f;
 	private float timeSinceSubmerssion = 0.0f;
 	private float timeSinceLettingGo = 0.0f;
+	private float timeSinceCollisionDisable = 0.0f;
+	private bool isCollisionsEnabled = true;
 
 	private int lastside = 1;
 
@@ -36,7 +40,7 @@ public class PlayerNew : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		string horizontal_axis_name = "Horizontal";
 		string fire_button_name = "Jump";
@@ -76,7 +80,7 @@ public class PlayerNew : MonoBehaviour {
 
 			transform.position = new Vector3 (transform.position.x, sea_y, transform.position.z);
 
-			if (buttonDownThisFrame) {
+			if (buttonPressed) {
 				state = playerState.underwaterMovingDown;
 			
 				timeSinceSubmerssion = 0.0f;
@@ -90,9 +94,9 @@ public class PlayerNew : MonoBehaviour {
 		} 
 		else if (state == playerState.underwaterMovingDown) {
 
-			timeSinceSubmerssion += Time.deltaTime;
+			timeSinceSubmerssion += Time.fixedDeltaTime;
 
-			transform.position += new Vector3 (0, -(buttonBaseIncrementSpeed - timeSinceSubmerssion)* baseIncrementSpeedMultiplier * Time.deltaTime);
+			transform.position += new Vector3 (0, -(buttonBaseIncrementSpeed - timeSinceSubmerssion)* baseIncrementSpeedMultiplier * Time.fixedDeltaTime);
 
 			if (buttonUpThisFrame || buttonBaseIncrementSpeed < timeSinceSubmerssion) {
 
@@ -104,24 +108,24 @@ public class PlayerNew : MonoBehaviour {
 		} 
 		else if (state == playerState.underwaterMovingUp) {
 
-			timeSinceLettingGo += Time.deltaTime;
+			timeSinceLettingGo += Time.fixedDeltaTime;
 
 			float speed = timeSinceLettingGo;
 			//if (speed < minMovingUpSpeed)
 			//	speed = minMovingUpSpeed;
 
-			verticalSpeed += speed * goBackUpSpeedMultipler * Time.deltaTime;
+			verticalSpeed += speed * goBackUpSpeedMultipler * Time.fixedDeltaTime;
 
 			transform.position += new Vector3 (0, verticalSpeed, 0);
 
 			if (nearSurface) {
 				state = playerState.outsideMovingUp;
-				verticalSpeed *= 1.2f;
+				verticalSpeed *= 1.8f;
 			}
 		}
 		else if (state == playerState.outsideMovingUp) {
 
-			verticalSpeed -= gravity * Time.deltaTime;
+			verticalSpeed -= gravity * Time.fixedDeltaTime;
 
 			transform.position += new Vector3 (0, verticalSpeed, 0);
 
@@ -133,7 +137,7 @@ public class PlayerNew : MonoBehaviour {
 		else if (state == playerState.outsideFaling) {
 
 			verticalSpeed -= gravity;
-			float fallingIncrement = verticalSpeed * Time.deltaTime;
+			float fallingIncrement = verticalSpeed * Time.fixedDeltaTime;
 			if (fallingIncrement > raycastDown.distance)
 				fallingIncrement = raycastDown.distance;
 
@@ -151,7 +155,7 @@ public class PlayerNew : MonoBehaviour {
 		if (horizontal_increment < 0 && wallCollision < 0)
 			horizontal_increment = 0;		
 
-		transform.position += new Vector3 (horizontal_increment * Time.deltaTime, 0, 0);
+		transform.position += new Vector3 (horizontal_increment * Time.fixedDeltaTime, 0, 0);
 
 		if (horizontal_increment > 0)
 			lastside = 1;
@@ -174,10 +178,14 @@ public class PlayerNew : MonoBehaviour {
 		}
 
 		transform.right = directionVector;
+
+		timeSinceCollisionDisable += Time.fixedDeltaTime;
+		if (timeSinceCollisionDisable >= collisionDisableTime)
+			isCollisionsEnabled = true;
 	}
 		
 	public float getSpeed(){
-		return verticalSpeed;
+		return (transform.position - previousPosition).magnitude;
 	}
 
 	public int getWallCollision(){
@@ -190,6 +198,15 @@ public class PlayerNew : MonoBehaviour {
 		if (raycastRight.distance < 0.8f) side_blocked = 1;
 
 		return side_blocked;
+	}
+
+	public bool collisionsEnabled(){
+		return isCollisionsEnabled;
+	}
+
+	public void disableCollisions(){
+		timeSinceCollisionDisable = 0.0f;
+		isCollisionsEnabled = false;
 	}
 }
 

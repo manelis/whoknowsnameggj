@@ -14,15 +14,22 @@ public class Ball : MonoBehaviour {
 	{
 		PlayerNew player = collision.gameObject.GetComponent<PlayerNew> ();
 
-		if (player != null) {
+		if (player != null && player.collisionsEnabled()) {
 			Vector3 direction = transform.position - collision.gameObject.transform.position;
 			self_rigidbody.constraints = RigidbodyConstraints2D.None;
-			self_rigidbody.AddForce (new Vector2 (direction.x, direction.y) * 100 * player.getSpeed());
+			Vector2 addedForce = new Vector2 (direction.x, direction.y) * 30 * player.getSpeed ();
+			Debug.Log (addedForce);
+			self_rigidbody.AddForce (addedForce,ForceMode2D.Impulse);
+
+			player.disableCollisions();
+			Debug.Log ("COLLISION!");
 		}
 		else if(collision.gameObject.layer == LayerMask.NameToLayer("MapWater")){
 			self_rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX;
 		}
 	}
+
+
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -39,7 +46,7 @@ public class Ball : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
+		//Debug.Log (self_rigidbody.velocity);
 		RaycastHit2D raycastDown = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, -1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
 	}
 }
