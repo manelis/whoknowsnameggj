@@ -75,7 +75,7 @@ public class PlayerNew : MonoBehaviour {
 	void FixedUpdate () {
 
 		string horizontal_axis_name = "Horizontal";
-		string fire_button_name = "Jump";
+		string fire_button_name = "";
 
 		if (playername == "player1")
 		{
@@ -89,7 +89,7 @@ public class PlayerNew : MonoBehaviour {
 
 		RaycastHit2D raycastDown = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, -1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
 		RaycastHit2D raycastUp = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, 1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
-
+	
 		float movementAxis = Input.GetAxis (horizontal_axis_name);
 		bool buttonPressed = Input.GetButton (fire_button_name);
 		bool buttonDownThisFrame = Input.GetButtonDown (fire_button_name);
@@ -115,6 +115,7 @@ public class PlayerNew : MonoBehaviour {
 			if (buttonPressed) {
 				state = playerState.underwaterMovingDown;
 			
+				verticalSpeed = 0;
 				timeSinceSubmerssion = 0.0f;
 			}
 
@@ -130,7 +131,7 @@ public class PlayerNew : MonoBehaviour {
 
 			transform.position += new Vector3 (0, -(buttonBaseIncrementSpeed - timeSinceSubmerssion)* baseIncrementSpeedMultiplier * Time.fixedDeltaTime);
 
-			if (buttonUpThisFrame || buttonBaseIncrementSpeed < timeSinceSubmerssion) {
+			if (!buttonPressed || buttonBaseIncrementSpeed < timeSinceSubmerssion) {
 
 				state = playerState.underwaterMovingUp;
 
@@ -242,7 +243,7 @@ public class PlayerNew : MonoBehaviour {
 
 	public void disableCollisions(){
 		timeSinceCollisionDisable = 0.0f;
-		isCollisionsEnabled = false;
+		//isCollisionsEnabled = false;
 	}
 }
 
