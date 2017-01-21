@@ -12,10 +12,12 @@ public class Ball : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (collision.gameObject.GetComponent<Player> () != null) {
+		PlayerNew player = collision.gameObject.GetComponent<PlayerNew> ();
+
+		if (player != null) {
 			Vector3 direction = transform.position - collision.gameObject.transform.position;
 			self_rigidbody.constraints = RigidbodyConstraints2D.None;
-			self_rigidbody.AddForce (new Vector2 (direction.x, direction.y) * 500);
+			self_rigidbody.AddForce (new Vector2 (direction.x, direction.y) * 100 * player.getSpeed());
 		}
 		else if(collision.gameObject.layer == LayerMask.NameToLayer("MapWater")){
 			self_rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX;

@@ -141,4 +141,8 @@ public class PlayerNew : MonoBehaviour {
 		//apply player input
 		transform.position += new Vector3 (horizontal_increment * Time.deltaTime, 0, 0);
 	}
+
+	public float getSpeed(){
+		return verticalSpeed;
+	}
 }
