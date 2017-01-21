@@ -24,6 +24,19 @@ public class Ball : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.gameObject.name.Equals ("BasketLeft")) {
+			GameObject.Find ("GameManager").GetComponent<Manager>().PlayerTwoScored();
+
+		} 
+		else
+		{
+			GameObject.Find ("GameManager").GetComponent<Manager>().PlayerOneScored();
+		}
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 
