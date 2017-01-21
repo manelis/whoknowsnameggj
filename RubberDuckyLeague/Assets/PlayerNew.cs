@@ -25,6 +25,10 @@ public class PlayerNew : MonoBehaviour {
 	private float timeSinceSubmerssion = 0.0f;
 	private float timeSinceLettingGo = 0.0f;
 
+	private int lastside = 1;
+
+	private Vector3 previousPosition = new Vector3(0,0,0);
+
 	// Use this for initialization
 	void Start () {
 
@@ -64,6 +68,8 @@ public class PlayerNew : MonoBehaviour {
 		}
 
 		float horizontal_increment = movementAxis * horizontalPlayerSpeed;
+
+		previousPosition = transform.position;
 
 		//state machine
 		if (state == playerState.floating) {
@@ -139,10 +145,52 @@ public class PlayerNew : MonoBehaviour {
 		}
 			
 		//apply player input
-		transform.position += new Vector3 (horizontal_increment * Time.deltaTime, 0, 0);
-	}
+		int wallCollision = getWallCollision();
+		if (horizontal_increment > 0 && wallCollision > 0)
+			horizontal_increment = 0;
+		if (horizontal_increment < 0 && wallCollision < 0)
+			horizontal_increment = 0;		
 
+		transform.position += new Vector3 (horizontal_increment * Time.deltaTime, 0, 0);
+
+		if (horizontal_increment > 0)
+			lastside = 1;
+		else if (horizontal_increment < 0)
+			lastside = -1;
+
+		Vector3 directionVector = transform.position - previousPosition;
+		if (lastside == -1) {
+			//directionVector = -directionVector;
+			this.GetComponent<SpriteRenderer> ().flipY = true;
+		}
+		else
+			this.GetComponent<SpriteRenderer> ().flipY = false;
+
+		if (Mathf.Abs(horizontal_increment) < 0.2f && state == playerState.floating) {
+			directionVector = new Vector3 (lastside, 0, 0);
+			if(lastside == -1)
+				this.GetComponent<SpriteRenderer> ().flipY = false;
+					
+		}
+
+		transform.right = directionVector;
+	}
+		
 	public float getSpeed(){
 		return verticalSpeed;
 	}
+
+	public int getWallCollision(){
+
+		RaycastHit2D raycastLeft = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), new Vector2(-1.0f, 0), 1000.0f, 1 << LayerMask.NameToLayer("Obstacle"));
+		RaycastHit2D raycastRight = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), new Vector2(1.0f, 0), 1000.0f, 1 << LayerMask.NameToLayer("Obstacle"));
+
+		int side_blocked = 0;
+		if (raycastLeft.distance < 0.8f) side_blocked = -1;
+		if (raycastRight.distance < 0.8f) side_blocked = 1;
+
+		return side_blocked;
+	}
 }
+
+
