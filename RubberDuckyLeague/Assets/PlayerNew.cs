@@ -311,9 +311,8 @@ public class PlayerNew : MonoBehaviour {
 			if (distance < powerupForceDistance) {
 
 				float force = 10 * (powerupForceDistance - distance);
-				Debug.Log (force);
 
-
+				ball.GetComponent<Ball> ().trail.SetActive (true);
 				ball.GetComponent<Rigidbody2D>().AddForce (direction * force,ForceMode2D.Impulse);
 				disableCollisions ();
 			}

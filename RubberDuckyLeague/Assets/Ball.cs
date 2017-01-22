@@ -5,9 +5,15 @@ public class Ball : MonoBehaviour {
 
 	Rigidbody2D self_rigidbody;
 
+	public GameObject trail;
+
+	//private float timeSinceTrailOn = 0.0f;
+	//private float trailTime = 2.0f;
+
 	// Use this for initialization
 	void Start () {
 		self_rigidbody = gameObject.GetComponent<Rigidbody2D> ();
+		trail = transform.FindChild ("Trail").gameObject;
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -28,6 +34,7 @@ public class Ball : MonoBehaviour {
 			//Debug.Log ("COLLISION!");
 		}
 		else if(collision.gameObject.layer == LayerMask.NameToLayer("MapWater")){
+			trail.SetActive (false);
 			self_rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX;
 		}
 	}
@@ -63,6 +70,6 @@ public class Ball : MonoBehaviour {
 
 		self_rigidbody.velocity = Vector2.zero;
 		self_rigidbody.angularVelocity = 0;
-
+		trail.SetActive (false);
 	}
 }
