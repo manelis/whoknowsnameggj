@@ -58,4 +58,11 @@ public class Ball : MonoBehaviour {
 			transform.position += new Vector3 (0, raycastUp.distance, 0);
 		}
 	}
+
+	public void resetState(){
+
+		self_rigidbody.velocity = Vector2.zero;
+		self_rigidbody.angularVelocity = 0;
+
+	}
 }

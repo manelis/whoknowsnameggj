@@ -9,6 +9,7 @@ public class Manager : MonoBehaviour {
 
 	public Text playerOneText;
 	public Text playerTwoText;
+	public Text playerScoredText;
 
 	string playerOneString;
 	string playerTwoString;
@@ -17,6 +18,9 @@ public class Manager : MonoBehaviour {
 	public GameObject player1;
 	public GameObject player2;
 
+	private int maxScore = 5;
+	private bool playerWon = false;
+
 	Vector3 ballInitialPosition;
 	Vector3 player1InitialPosition;
 	Vector3 player2InitialPosition;
@@ -24,6 +28,10 @@ public class Manager : MonoBehaviour {
 	float timeWhenScored;
 	public float resetTime = 2.0f;
 	bool scored;
+
+	Color yellowColor = new Color(255f/255f, 221f/255f,85f/255f,255f/255f);
+	Color greenColor = new Color(94f/255f,205f/255f,84f/255f,255f/255f);
+
 
 
 	// Use this for initialization
@@ -47,33 +55,71 @@ public class Manager : MonoBehaviour {
 		if (Input.GetKey (KeyCode.R)) 
 		{
 			ResetPositions ();
-		};
+		}
 
+		if (scored && (Time.time - timeWhenScored) >= resetTime && !playerWon) {
+			ResetPositions ();
+		}
 
-		if (scored && (Time.time - timeWhenScored) >= resetTime) {
+		if (playerWon && Input.GetButtonDown("Submit")) {
+			playerWon = false;
+			ResetScore ();
 			ResetPositions ();
 		}
 	}
 
 	public void PlayerOneScored()
 	{
+		if (scored)
+			return;
+
 		playerOneText.text = playerOneString + (++scorePlayer1);
+		playerScoredText.text = "Yellow scored!";
+		playerScoredText.color = yellowColor;
 		Score ();
 	}
 
 	public void PlayerTwoScored()
 	{
+		if (scored)
+			return;
+		
 		playerTwoText.text = playerTwoString + (++scorePlayer2);
+		playerScoredText.text = "Green scored!";
+		playerScoredText.color = greenColor;
 		Score ();
 
 	}
 
 	void Score(){
-		if (scored)
-			return;
 
+		checkWinningCondition ();
+
+		playerScoredText.enabled = true;
 		scored = true;
 		timeWhenScored = Time.time;
+	}
+
+	void checkWinningCondition()
+	{
+		if (scorePlayer1 >= maxScore) 
+		{
+			playerWon = true;
+			playerScoredText.text = "Yellow Wins!";
+		}
+		else if(scorePlayer2 >= maxScore)
+		{
+			playerScoredText.text = "Green Wins!";
+			playerWon = true;
+		}
+	}
+
+	void ResetScore()
+	{
+		scorePlayer2 = 0;
+		scorePlayer1 = 0;
+		playerTwoText.text = playerTwoString + scorePlayer2;
+		playerOneText.text = playerOneString + scorePlayer1;
 	}
 
 	void ResetPositions()
@@ -85,8 +131,10 @@ public class Manager : MonoBehaviour {
 		player1.GetComponent<PlayerNew> ().resetState ();
 		player2.GetComponent<PlayerNew> ().resetState ();
 
-		//TODO: rotate players to face each other
+		ball.GetComponent<Ball> ().resetState ();
 		scored = false;
+
+		playerScoredText.enabled = false;
 	}
 
 }
