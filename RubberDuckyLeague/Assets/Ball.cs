@@ -40,7 +40,7 @@ public class Ball : MonoBehaviour {
 			GameObject.Find ("GameManager").GetComponent<Manager>().PlayerTwoScored();
 
 		} 
-		else
+		else if(other.gameObject.name.Equals ("BasketRight"))
 		{
 			GameObject.Find ("GameManager").GetComponent<Manager>().PlayerOneScored();
 		}

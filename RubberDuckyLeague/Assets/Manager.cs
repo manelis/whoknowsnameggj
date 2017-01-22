@@ -32,7 +32,19 @@ public class Manager : MonoBehaviour {
 	Color yellowColor = new Color(255f/255f, 221f/255f,85f/255f,255f/255f);
 	Color greenColor = new Color(94f/255f,205f/255f,84f/255f,255f/255f);
 
+	public GameObject shockwavePowerupPrefab;
+	private float powerUpRangeMin = 10.0f;
+	private float powerUpRangeMax = 25.4f;
 
+	private float powerUpRangeHMin = 5.0f;
+	private float powerUpRangeHMax = 15.0f;
+
+	private float timeSincePowerUp = 0.0f;
+
+	private ShockwavePowerup shockWavePowerUp = null;
+
+	public Image player1Shockwave;
+	public Image player2Shockwave;
 
 	// Use this for initialization
 	void Start () {
@@ -65,6 +77,16 @@ public class Manager : MonoBehaviour {
 			playerWon = false;
 			ResetScore ();
 			ResetPositions ();
+		}
+
+		timeSincePowerUp += Time.deltaTime;
+		if (shockWavePowerUp == null && timeSincePowerUp > 2.0f) {
+			if (Random.value < timeSincePowerUp / 400.0f) {
+
+				GameObject shockwave = Instantiate(shockwavePowerupPrefab, new Vector3(Random.Range(powerUpRangeMin, powerUpRangeMax), Random.Range(powerUpRangeHMin, powerUpRangeHMax)) ,Quaternion.identity) as GameObject;
+				shockWavePowerUp = shockwave.GetComponent<ShockwavePowerup>();
+				shockWavePowerUp.gameManager = this;
+			}
 		}
 	}
 
@@ -135,6 +157,22 @@ public class Manager : MonoBehaviour {
 		scored = false;
 
 		playerScoredText.enabled = false;
+		timeSincePowerUp = 0.0f;
+		shockWavePowerUp = null;
+
+		player1Shockwave.enabled = false;
+		player2Shockwave.enabled = false;
+	}
+
+	public void shockWaveUsed(){
+		if (shockWavePowerUp == null)
+			return;
+		
+		Destroy (shockWavePowerUp.gameObject);
+
+		shockWavePowerUp = null;
+		timeSincePowerUp = 0.0f;
+
 	}
 
 }

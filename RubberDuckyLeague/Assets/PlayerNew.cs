@@ -21,6 +21,7 @@ public class PlayerNew : MonoBehaviour {
 	private float baseIncrementSpeedMultiplier; //value multiplied to the speed when submerging
 	private float goBackUpSpeedMultipler;
 	private float minMovingUpSpeed;
+	private float powerupForceDistance = 8.0f;
 
 	private float collisionDisableTime;
 
@@ -31,10 +32,18 @@ public class PlayerNew : MonoBehaviour {
 	private float timeSinceCollisionDisable;
 	private bool isCollisionsEnabled;
 
+	private float timeSinceShockwave;
+	private float shockwaveDisplayTime;
+
 	private int lastside;
 
 	private Vector3 previousPosition;
 
+	private ShockwavePowerup powerup;
+
+	private Manager manager;
+
+	private GameObject shockwaveEffect;
 
 	public void resetState(){
 
@@ -54,6 +63,8 @@ public class PlayerNew : MonoBehaviour {
 		timeSinceLettingGo = 0.0f;
 		timeSinceCollisionDisable = 0.0f;
 		isCollisionsEnabled = true;
+		timeSinceShockwave = 0.0f;
+		shockwaveDisplayTime = 0.3f;
 
 		lastside = 1;
 		if (playername == "player2")
@@ -62,7 +73,10 @@ public class PlayerNew : MonoBehaviour {
 		previousPosition = new Vector3(0,0,0);
 
 		state = playerState.outsideFaling;
+		powerup = null;
 
+		manager = GameObject.Find ("GameManager").GetComponent<Manager> ();
+		shockwaveEffect = transform.FindChild ("ShockwaveEffect").gameObject;
 	}
 
 
@@ -75,17 +89,20 @@ public class PlayerNew : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		string horizontal_axis_name = "Horizontal";
+		string horizontal_axis_name = "";
 		string fire_button_name = "";
+		string shockwave_button_name = "";
 
 		if (playername == "player1")
 		{
 			horizontal_axis_name = "Horizontal";
 			fire_button_name = "Jump";
+			shockwave_button_name = "Shockwave";
 		}
 		else {
 			horizontal_axis_name = "Horizontal2";
 			fire_button_name = "Jump2";
+			shockwave_button_name = "Shockwave2";
 		}
 
 		RaycastHit2D raycastDown = Physics2D.Raycast (new Vector2 (transform.position.x, transform.position.y), new Vector2 (0, -1.0f),1000.0f, 1 << LayerMask.NameToLayer("MapWater"));
@@ -95,6 +112,7 @@ public class PlayerNew : MonoBehaviour {
 		bool buttonPressed = Input.GetButton (fire_button_name);
 		bool buttonDownThisFrame = Input.GetButtonDown (fire_button_name);
 		bool buttonUpThisFrame = Input.GetButtonUp (fire_button_name);
+		bool shockwavePressed = Input.GetButton (shockwave_button_name);
 		bool nearSurface = raycastDown.distance < raycastRadius && raycastUp.distance == 0 || raycastUp.distance < raycastRadius && raycastDown.distance == 0;
 
 		float sea_y = 0;
@@ -185,6 +203,15 @@ public class PlayerNew : MonoBehaviour {
 			}
 		}
 			
+		//shockwave
+		if (powerup != null && shockwavePressed) {
+			useShockwave ();
+		}
+		timeSinceShockwave += Time.deltaTime;
+		if (timeSinceShockwave > shockwaveDisplayTime)
+			shockwaveEffect.SetActive (false);
+
+
 		//apply player input
 		int wallCollision = getWallCollision();
 		if (horizontal_increment > 0 && wallCollision > 0)
@@ -248,6 +275,51 @@ public class PlayerNew : MonoBehaviour {
 	public void disableCollisions(){
 		timeSinceCollisionDisable = 0.0f;
 		//isCollisionsEnabled = false;
+	}
+
+	public void addPowerUp(ShockwavePowerup pickup){
+
+		powerup = pickup;
+
+		if (playername == "player1") {
+			manager.player1Shockwave.enabled = true;
+			manager.player2Shockwave.enabled = false;
+		} else {
+			manager.player1Shockwave.enabled = false;
+			manager.player2Shockwave.enabled = true;
+		}
+	}
+
+	public void useShockwave(){
+		timeSinceShockwave = 0.0f; 
+		powerup = null;
+		manager.shockWaveUsed ();
+
+		if (playername == "player1") {
+			manager.player1Shockwave.enabled = false;
+		} else {
+			manager.player2Shockwave.enabled = false;
+		}
+
+		shockwaveEffect.SetActive (true);
+
+		GameObject ball = GameObject.Find ("ball");
+
+		if (ball != null) {
+			float distance = (ball.transform.position - transform.position).magnitude;
+			Vector3 direction = (ball.transform.position - transform.position).normalized;
+			if (distance < powerupForceDistance) {
+
+				float force = 10 * (powerupForceDistance - distance);
+				Debug.Log (force);
+
+
+				ball.GetComponent<Rigidbody2D>().AddForce (direction * force,ForceMode2D.Impulse);
+				disableCollisions ();
+			}
+
+		}
+
 	}
 }
 
